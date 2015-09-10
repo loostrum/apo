@@ -1,0 +1,93 @@
+#!/usr/bin/env python
+'''
+Order merging for normalized eShel spectra.
+Author: Leon Oostrum
+E-Mail: l.c.oostrum@uva.nl
+'''
+
+from __future__ import division
+import os
+import glob
+from distutils.util import strtobool
+from bisect import bisect_left, bisect_right
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+def read_file(filename):
+    '''
+    Read an ascii file as produced by specnorm.py.
+    '''
+    wave, flux = np.loadtxt(filename).T
+    return list(wave), list(flux)
+
+if __name__ == '__main__':
+    data_dir = '/home/leon/apo_scripts/eshel/test_data/air/norm'
+    # get list of files
+    filelist = glob.glob('{0}/*P_1B_[0-9][0-9]_norm.dat'.format(data_dir))
+    pre = filelist[0].split('P_1B')[0] + 'P_1B_'
+    aft = '_norm.dat'
+    # Get object name
+    obj = filelist[0].split('-')[2]
+    # create dict which returns filename as function of order
+    files = dict([ (int(f.split(pre)[1].split(aft)[0]), f) for f in filelist ])
+    # get list of orders. Reverse to get shorter wavelengths first
+    orders = sorted(files.keys(), reverse=True)
+
+    # load first order
+    wave_full, flux_full = read_file(files[orders[0]])
+    # array to save order merge locations
+    merge_locs = []
+    # loop over orders, but skip first one
+    for i, order in enumerate(orders[1:]):
+        print 'Processing order {0} ({1}/{2})'.format(order, i+1, len(orders))
+        # load data
+        wave, flux = read_file(files[order])
+        # find overlap with previous order
+        min_old = bisect_left(wave_full, wave[0])
+        max_new = bisect_right(wave, wave_full[-1])
+        # save merge locations
+        merge_locs.append([wave[0], wave_full[-1]])
+        # average the overlapping part
+        part1 = np.array(flux_full[min_old:])
+        part2 = np.array(flux[:max_new])
+        flux_avg = list(np.mean(np.array([part1, part2]), axis=0))
+        # add to final data
+        wave_full.extend(wave[max_new:])
+        flux_full[min_old:] = flux_avg
+        flux_full.extend(flux[max_new:])
+
+    # make a plot if needed
+    try:
+        ans = strtobool(raw_input('Show the spectrum [Y/n]?\n'))
+    except ValueError:
+        ans = 1
+    if ans == 1:
+        fig, ax = plt.subplots()
+        ax.plot(wave_full, flux_full)
+        for wav_min, wav_max in merge_locs:
+            ax.axvspan(wav_min, wav_max, alpha=.1)
+        ax.set_xlim(wave_full[0], wave_full[-1])
+        ax.set_ylim(ymin=max(ax.set_ylim()[0], 0))
+        ax.ticklabel_format(axis='both', useOffset=False)
+        ax.set_xlabel(r'Wavelength ($\AA$)')
+        ax.set_ylabel('Flux (norm.)')
+        fig.suptitle(obj)
+        plt.show()
+
+    # save spectrum
+    try:
+        ans = strtobool(raw_input('Save the spectrum? [Y/n]?\n'))
+    except ValueError:
+        ans = 1
+    if ans == 1:
+        filename = obj.lower()+'_merged.dat'
+        if os.path.isfile(filename):
+            try:
+                ans = strtobool(raw_input('File already exists: {0}, overwrite? [Y/n]?\n'.format(filename)))
+            except ValueError:
+                ans == 1
+            if not ans:
+                exit()
+        data = np.array([wave_full, flux_full]).T
+        np.savetxt(obj.lower()+'_merged.dat', data)
