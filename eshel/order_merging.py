@@ -116,4 +116,4 @@ if __name__ == '__main__':
             if not ans:
                 exit()
         data = np.array([wave_full, flux_full]).T
-        np.savetxt(obj.lower()+'_merged.dat', data)
+        np.savetxt(os.path.join(save_dir, obj.lower()+'_merged.dat'), data)
