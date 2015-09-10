@@ -106,6 +106,8 @@ if __name__ == "__main__":
     wave,flux = read_fits(filename)
     spectrum, = plt.plot(wave,flux,'k-',label='spectrum')
     plt.title(filename)
+    plt.xlabel(r'Wavelength ($\AA$)')
+    plt.ylabel('Flux')
 
     # Connect the different functions to the different events
     plt.gcf().canvas.mpl_connect('key_press_event',ontype)

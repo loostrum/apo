@@ -24,7 +24,7 @@ def read_file(filename):
 
 if __name__ == '__main__':
     if not len(sys.argv) in (2, 3):
-        print 'Wrong number of arguments.\nPlease specify data directory and save directory (optional).'
+        print 'Usage: order_merging.py DATADIR SAVEDIR (optional)'
         sys.exit(1)
     # set data dir
     data_dir = sys.argv[1]
@@ -50,7 +50,7 @@ if __name__ == '__main__':
             sys.exit(1)
 
     # get list of files
-    filelist = glob.glob(os.path.join(data_ir, '*P_1C_[0-9][0-9]_norm.dat'))
+    filelist = glob.glob(os.path.join(data_dir, '*P_1C_[0-9][0-9]_norm.dat'))
     pre = filelist[0].split('P_1C')[0] + 'P_1C_'
     aft = '_norm.dat'
     # Get object name

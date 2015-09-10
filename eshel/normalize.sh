@@ -76,7 +76,6 @@ echo "Will now call normalization script."
 for file in $files; do
     echo `basename $file`
     $specnorm $file $savedir 
-    exit 1
 done
 
 # We are done :D
