@@ -7,6 +7,7 @@ E-Mail: l.c.oostrum@uva.nl
 
 from __future__ import division
 import os
+import sys
 import glob
 from distutils.util import strtobool
 from bisect import bisect_left, bisect_right
@@ -22,7 +23,11 @@ def read_file(filename):
     return list(wave), list(flux)
 
 if __name__ == '__main__':
-    data_dir = '/home/leon/apo_scripts/eshel/test_data/air/norm'
+    if len(sys.argv) != 3:
+        print 'Wrong number of arguments.\nPlease specify data directory and save directory.'
+        sys.exit(1)
+    data_dir = sys.argv[1]
+    save_dir = sys.argv[2]
     # get list of files
     filelist = glob.glob('{0}/*P_1B_[0-9][0-9]_norm.dat'.format(data_dir))
     pre = filelist[0].split('P_1B')[0] + 'P_1B_'
@@ -81,7 +86,7 @@ if __name__ == '__main__':
     except ValueError:
         ans = 1
     if ans == 1:
-        filename = obj.lower()+'_merged.dat'
+        filename = os.path.join(save_dir, obj.lower()+'_merged.dat')
         if os.path.isfile(filename):
             try:
                 ans = strtobool(raw_input('File already exists: {0}, overwrite? [Y/n]?\n'.format(filename)))

@@ -93,7 +93,7 @@ def ontype(event):
 if __name__ == "__main__":
     # Get the filename of the spectrum from the command line, and plot it
     if len(sys.argv) != 3:
-        print 'Please provide filename and savedir.'
+        print 'Wrong number of arguments.\nPlease provide filename and savedir.'
         sys.exit(1)
     filename = sys.argv[1]
     save_dir = sys.argv[2]
