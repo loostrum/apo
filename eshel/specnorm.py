@@ -84,7 +84,7 @@ def ontype(event):
         for artist in plt.gca().get_children():
             if hasattr(artist,'get_label') and artist.get_label()=='normalised':
                 data = np.array(artist.get_data())
-                np.savetxt(os.path.join(save_dir, os.path.splitext(filename)[0]+'_norm.dat'),data.T)
+                np.savetxt(os.path.join(save_dir, os.path.basename(os.path.splitext(filename)[0])+'_norm.dat'),data.T)
                 print('Saved to file')
                 break
     plt.draw()
@@ -93,10 +93,16 @@ def ontype(event):
 if __name__ == "__main__":
     # Get the filename of the spectrum from the command line, and plot it
     if len(sys.argv) != 3:
-        print 'Wrong number of arguments.\nPlease provide filename and savedir.'
+        print 'Usage: specnorm.py FILENAME SAVEDIR'
         sys.exit(1)
     filename = sys.argv[1]
+    if not os.path.isfile(filename):
+        print 'File not found'
+        sys.exit(1)
     save_dir = sys.argv[2]
+    if not os.path.isdir(save_dir):
+        print 'Save directory not found'
+        sys.exit(1)
     wave,flux = read_fits(filename)
     spectrum, = plt.plot(wave,flux,'k-',label='spectrum')
     plt.title(filename)

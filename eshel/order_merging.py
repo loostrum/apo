@@ -23,14 +23,35 @@ def read_file(filename):
     return list(wave), list(flux)
 
 if __name__ == '__main__':
-    if len(sys.argv) != 3:
-        print 'Wrong number of arguments.\nPlease specify data directory and save directory.'
+    if not len(sys.argv) in (2, 3):
+        print 'Wrong number of arguments.\nPlease specify data directory and save directory (optional).'
         sys.exit(1)
+    # set data dir
     data_dir = sys.argv[1]
-    save_dir = sys.argv[2]
+    if not os.path.isdir(data_dir):
+        print 'Data directory does not exist.'
+        sys.exit(1)
+
+    # set save dir
+    if len(sys.argv) == 2:
+        # save dir was not specified
+        try:
+            ans = strtobool(raw_input('Save directory not specified. Use data directory? [Y/n]\n'))
+        except ValueError:
+            ans = 1
+        if ans:
+            save_dir = data_dir[:]
+        else:
+            sys.exit(1)
+    else:
+        # check if save dir exists
+        if not os.path.isdir(save_dir):
+            print 'Save directory does not exist.'
+            sys.exit(1)
+
     # get list of files
-    filelist = glob.glob('{0}/*P_1B_[0-9][0-9]_norm.dat'.format(data_dir))
-    pre = filelist[0].split('P_1B')[0] + 'P_1B_'
+    filelist = glob.glob(os.path.join(data_ir, '*P_1C_[0-9][0-9]_norm.dat'))
+    pre = filelist[0].split('P_1C')[0] + 'P_1C_'
     aft = '_norm.dat'
     # Get object name
     obj = filelist[0].split('-')[2]
