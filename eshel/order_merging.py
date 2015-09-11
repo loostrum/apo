@@ -15,6 +15,7 @@ from bisect import bisect_left, bisect_right
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 def read_file(filename):
     '''
     Read an ascii file as produced by specnorm.py.
@@ -57,7 +58,7 @@ if __name__ == '__main__':
     # Get object name
     obj = filelist[0].split('-')[2]
     # create dict which returns filename as function of order
-    files = dict([ (int(f.split(pre)[1].split(aft)[0]), f) for f in filelist ])
+    files = dict([(int(f.split(pre)[1].split(aft)[0]), f) for f in filelist])
     # get list of orders. Reverse to get shorter wavelengths first
     orders = sorted(files.keys(), reverse=True)
 

@@ -5,10 +5,11 @@ import signal
 
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.interpolate import splrep,splev
+from scipy.interpolate import splrep, splev
 from astropy.io import fits
 
 # from http://python4esac.github.io/plotting/specnorm.html
+
 
 def read_fits(filename):
     '''
@@ -27,6 +28,7 @@ def read_fits(filename):
             flux.pop[0]
     return np.array(wave), np.array(flux)
 
+
 def onclick(event):
     # when none of the toolbar buttons is activated and the user clicks in the
     # plot somewhere, compute the median value of the spectrum in a .5 angstrom
@@ -34,17 +36,19 @@ def onclick(event):
     # of the clicked point is not important. Make sure the continuum points
     # `feel` it when it gets clicked, set the `feel-radius` (picker) to 5 points
     toolbar = plt.get_current_fig_manager().toolbar
-    if event.button==1 and toolbar.mode=='':
-        window = ((event.xdata-.25)<=wave) & (wave<=(event.xdata+.25))
+    if event.button == 1 and toolbar.mode == '':
+        window = ((event.xdata-.25) <= wave) & (wave <= (event.xdata+.25))
         y = np.median(flux[window])
-        plt.plot(event.xdata,y,'rs',ms=10,picker=5,label='cont_pnt')
+        plt.plot(event.xdata, y, 'rs', ms=10, picker=5, label='cont_pnt')
     plt.draw()
+
 
 def onpick(event):
     # when the user clicks right on a continuum point, remove it
-    if event.mouseevent.button==3:
-        if hasattr(event.artist,'get_label') and event.artist.get_label()=='cont_pnt':
+    if event.mouseevent.button == 3:
+        if hasattr(event.artist, 'get_label') and event.artist.get_label() == 'cont_pnt':
             event.artist.remove()
+
 
 def ontype(event):
     # when the user hits enter:
@@ -54,44 +58,44 @@ def ontype(event):
     # 2. sort the continuum-point-array according to the x-values
     # 3. fit a spline and evaluate it in the wavelength points
     # 4. plot the continuum
-    if event.key=='enter':
+    if event.key == 'enter':
         cont_pnt_coord = []
         for artist in plt.gca().get_children():
-            if hasattr(artist,'get_label') and artist.get_label()=='cont_pnt':
+            if hasattr(artist, 'get_label') and artist.get_label() == 'cont_pnt':
                 cont_pnt_coord.append(artist.get_data())
-            elif hasattr(artist,'get_label') and artist.get_label()=='continuum':
+            elif hasattr(artist, 'get_label') and artist.get_label() == 'continuum':
                 artist.remove()
-        cont_pnt_coord = np.array(cont_pnt_coord)[...,0]
-        sort_array = np.argsort(cont_pnt_coord[:,0])
-        x,y = cont_pnt_coord[sort_array].T
-        spline = splrep(x,y,k=3)
-        continuum = splev(wave,spline)
-        plt.plot(wave,continuum,'r-',lw=2,label='continuum')
+        cont_pnt_coord = np.array(cont_pnt_coord)[..., 0]
+        sort_array = np.argsort(cont_pnt_coord[:, 0])
+        x, y = cont_pnt_coord[sort_array].T
+        spline = splrep(x, y, k=3)
+        continuum = splev(wave, spline)
+        plt.plot(wave, continuum, 'r-', lw=2, label='continuum')
 
     # when the user hits 'n' and a spline-continuum is fitted, normalise the
     # spectrum
-    elif event.key=='n':
+    elif event.key == 'n':
         continuum = None
         for artist in plt.gca().get_children():
-            if hasattr(artist,'get_label') and artist.get_label()=='continuum':
+            if hasattr(artist, 'get_label') and artist.get_label() == 'continuum':
                 continuum = artist.get_data()[1]
                 break
         if continuum is not None:
             plt.cla()
-            plt.plot(wave,flux/continuum,'k-',label='normalised')
+            plt.plot(wave, flux/continuum, 'k-', label='normalised')
 
     # when the user hits 'r': clear the axes and plot the original spectrum
-    elif event.key=='r':
+    elif event.key == 'r':
         plt.cla()
-        plt.plot(wave,flux,'k-')
+        plt.plot(wave, flux, 'k-')
 
     # when the user hits 'w': if the normalised spectrum exists, write it to a
     # file.
-    elif event.key=='w':
+    elif event.key == 'w':
         for artist in plt.gca().get_children():
-            if hasattr(artist,'get_label') and artist.get_label()=='normalised':
+            if hasattr(artist, 'get_label') and artist.get_label() == 'normalised':
                 data = np.array(artist.get_data())
-                np.savetxt(os.path.join(save_dir, os.path.basename(os.path.splitext(filename)[0])+'_norm.dat'),data.T)
+                np.savetxt(os.path.join(save_dir, os.path.basename(os.path.splitext(filename)[0])+'_norm.dat'), data.T)
                 print('Saved to file')
                 break
     plt.draw()
@@ -110,16 +114,16 @@ if __name__ == "__main__":
     if not os.path.isdir(save_dir):
         print 'Save directory not found'
         sys.exit(1)
-    wave,flux = read_fits(filename)
-    spectrum, = plt.plot(wave,flux,'k-',label='spectrum')
+    wave, flux = read_fits(filename)
+    spectrum, = plt.plot(wave, flux, 'k-', label='spectrum')
     plt.title(filename)
     plt.xlabel(r'Wavelength ($\AA$)')
     plt.ylabel('Flux')
 
     # Connect the different functions to the different events
-    plt.gcf().canvas.mpl_connect('key_press_event',ontype)
-    plt.gcf().canvas.mpl_connect('button_press_event',onclick)
-    plt.gcf().canvas.mpl_connect('pick_event',onpick)
-    plt.show() # show the window
+    plt.gcf().canvas.mpl_connect('key_press_event', ontype)
+    plt.gcf().canvas.mpl_connect('button_press_event', onclick)
+    plt.gcf().canvas.mpl_connect('pick_event', onpick)
+    plt.show()  # show the window
     # Trap Ctrl+C
     signal.signal(signal.SIGINT, sys.exit(1))
