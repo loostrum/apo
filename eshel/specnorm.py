@@ -18,10 +18,13 @@ def read_fits(filename):
         header = f[0].header
         wave = list((np.arange(header['naxis1']) - (int(header['crpix1']) - 1)) * header['cdelt1'] + header['crval1'])
         flux = list(f[0].data)
-        # eShel orders have zeros at the end
+        # eShel orders have zeros at the end and/or start
         while flux[-1] == 0:
             wave.pop(-1)
             flux.pop(-1)
+        while flux[0] == 0:
+            wave.pop[0]
+            flux.pop[0]
     return np.array(wave), np.array(flux)
 
 def onclick(event):
