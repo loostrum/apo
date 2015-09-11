@@ -16,19 +16,23 @@ def read_fits(filename):
     '''
     with fits.open(filename) as f:
         header = f[0].header
-        wave = (np.arange(header['naxis1']) - (int(header['crpix1']) - 1)) * header['cdelt1'] + header['crval1']
-        flux = f[0].data 
-    return wave, flux
+        wave = list((np.arange(header['naxis1']) - (int(header['crpix1']) - 1)) * header['cdelt1'] + header['crval1'])
+        flux = list(f[0].data)
+        # eShel orders have zeros at the end
+        while flux[-1] == 0:
+            wave.pop(-1)
+            flux.pop(-1)
+    return np.array(wave), np.array(flux)
 
 def onclick(event):
     # when none of the toolbar buttons is activated and the user clicks in the
-    # plot somewhere, compute the median value of the spectrum in a 2 angstrom
+    # plot somewhere, compute the median value of the spectrum in a .5 angstrom
     # window around the x-coordinate of the clicked point. The y coordinate
     # of the clicked point is not important. Make sure the continuum points
     # `feel` it when it gets clicked, set the `feel-radius` (picker) to 5 points
     toolbar = plt.get_current_fig_manager().toolbar
     if event.button==1 and toolbar.mode=='':
-        window = ((event.xdata-1.)<=wave) & (wave<=(event.xdata+1.))
+        window = ((event.xdata-.25)<=wave) & (wave<=(event.xdata+.25))
         y = np.median(flux[window])
         plt.plot(event.xdata,y,'rs',ms=10,picker=5,label='cont_pnt')
     plt.draw()

@@ -44,6 +44,7 @@ if __name__ == '__main__':
         else:
             sys.exit(1)
     else:
+        save_dir = sys.argv[2]
         # check if save dir exists
         if not os.path.isdir(save_dir):
             print 'Save directory does not exist.'
