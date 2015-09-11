@@ -1,6 +1,6 @@
 #!/bin/bash
 # Script for processing eShel spectra
-# Depends on specnorm.py and order_mergin.py
+# Depends on specnorm.py and order_merging.py
 #
 # Author: Leon Oostrum
 # E-Mail: l.c.oostrum@uva.nl
