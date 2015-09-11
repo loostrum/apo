@@ -1,7 +1,6 @@
 #!/bin/bash
-# normalize.sh
 # Script for processing eShel spectra
-# Depends on specnorm.py
+# Depends on specnorm.py and order_mergin.py
 #
 # Author: Leon Oostrum
 # E-Mail: l.c.oostrum@uva.nl
@@ -11,10 +10,18 @@ trap exit INT
 self=`readlink -f $0`
 scriptdir=`dirname $self`
 specnorm=$scriptdir/specnorm.py
+merging=$scriptdir/order_merging.py
 
 # Check if specnorm is available
 if [[ ! -f $specnorm ]]; then
     echo "specnorm.py not found."
+    echo "Please make sure it is located in the same directory as this script."
+    exit 1
+fi
+
+# Check if order merging is available
+if [[ ! -f $merging ]]; then
+    echo "order_merging.py not found."
     echo "Please make sure it is located in the same directory as this script."
     exit 1
 fi
@@ -77,6 +84,15 @@ for file in $files; do
     echo `basename $file`
     $specnorm $file $savedir 
 done
+
+# Merge orders
+echo "Normalization finished."
+read -rep "Start order merging [Y/n]?" ans
+case $ans in 
+    [Nn] ) exit 0;;
+    [Yy] ) $merging $savedir $savedir;;
+    *    ) $merging $savedir $savedir;;
+esac
 
 # We are done :D
 exit 0
