@@ -29,7 +29,7 @@ fi
 # Check if data directory is supplied by user
 if [[ "$#" -eq "0" ]]; then
     echo "Usage: `basename $0` DATADIR SAVEDIR"
-    echo "DATADIR: Directory containing the fully calibrated files (1C) produced by Audela, one per order."
+    echo "DATADIR: Directory containing the fully calibrated files (1B) produced by Audela, one per order."
     echo "SAVEDIR: Optional, default is DATADIR/../norm. Normalized spectra are saved to this directory."
     exit 1
 fi
@@ -64,9 +64,9 @@ if [[ ! -d "$savedir" ]]; then
 fi
 
 # Create list of files
-files=`ls $datadir/*_1C_[0-9][0-9].fit 2>/dev/null`
+files=`ls $datadir/*_1B_[0-9][0-9].fit 2>/dev/null`
 # There has to be better way to do this ...
-nfiles=`ls $datadir/*_1C_[0-9][0-9].fit 2>/dev/null | wc -l`
+nfiles=`ls $datadir/*_1B_[0-9][0-9].fit 2>/dev/null | wc -l`
 
 # check if directory contains the right files
 if [[ "$nfiles" -eq "0" ]]; then

@@ -52,8 +52,8 @@ if __name__ == '__main__':
             sys.exit(1)
 
     # get list of files
-    filelist = glob.glob(os.path.join(data_dir, '*P_1C_[0-9][0-9]_norm.dat'))
-    pre = filelist[0].split('P_1C')[0] + 'P_1C_'
+    filelist = glob.glob(os.path.join(data_dir, '*P_1B_[0-9][0-9]_norm.dat'))
+    pre = filelist[0].split('P_1C')[0] + 'P_1B_'
     aft = '_norm.dat'
     # Get object name
     obj = filelist[0].split('-')[2]

@@ -24,8 +24,8 @@ def read_fits(filename):
             wave.pop(-1)
             flux.pop(-1)
         while flux[0] == 0:
-            wave.pop[0]
-            flux.pop[0]
+            wave.pop(0)
+            flux.pop(0)
     return np.array(wave), np.array(flux)
 
 
