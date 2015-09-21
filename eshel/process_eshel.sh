@@ -11,6 +11,16 @@ self=`readlink -f $0`
 scriptdir=`dirname $self`
 specnorm=$scriptdir/specnorm.py
 merging=$scriptdir/order_merging.py
+savedir=.
+# Merge orders
+echo "Normalization finished."
+read -rep "Start order merging [Y/n]?" ans
+case $ans in 
+    [Nn] ) echo "Run $mergin $savedir $savedir to merge orders."
+           exit 0;;
+    [Yy] ) $merging $savedir $savedir;;
+    *    ) $merging $savedir $savedir;;
+esac
 
 # Check if specnorm is available
 if [[ ! -f $specnorm ]]; then
@@ -89,7 +99,8 @@ done
 echo "Normalization finished."
 read -rep "Start order merging [Y/n]?" ans
 case $ans in 
-    [Nn] ) exit 0;;
+    [Nn] ) echo "Run $mergin $savedir $savedir to merge orders."
+           exit 0;;
     [Yy] ) $merging $savedir $savedir;;
     *    ) $merging $savedir $savedir;;
 esac
