@@ -7,8 +7,9 @@
 
 trap exit INT
 
-self=`readlink -f $0`
-scriptdir=`dirname $self`
+#self=`readlink -f $0`
+scriptdir=$(cd `dirname $0` && pwd -P)
+self=$scriptdir/`basename $0`
 specnorm=$scriptdir/specnorm.py
 merging=$scriptdir/order_merging.py
 savedir=.
