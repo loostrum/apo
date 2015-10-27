@@ -7,21 +7,10 @@
 
 trap exit INT
 
-#self=`readlink -f $0`
 scriptdir=$(cd `dirname $0` && pwd -P)
 self=$scriptdir/`basename $0`
 specnorm=$scriptdir/specnorm.py
 merging=$scriptdir/order_merging.py
-savedir=.
-# Merge orders
-echo "Normalization finished."
-read -rep "Start order merging [Y/n]?" ans
-case $ans in 
-    [Nn] ) echo "Run $mergin $savedir $savedir to merge orders."
-           exit 0;;
-    [Yy] ) $merging $savedir $savedir;;
-    *    ) $merging $savedir $savedir;;
-esac
 
 # Check if specnorm is available
 if [[ ! -f $specnorm ]]; then
@@ -46,7 +35,7 @@ if [[ "$#" -eq "0" ]]; then
 fi
 
 # set directories
-datadir=`readlink -f $1`
+datadir=$(cd `dirname $1` && pwd -P)
 if [[ ! -d $datadir ]]; then
     echo "$datadir does not exist."
     exit 1
@@ -56,7 +45,7 @@ fi
 # Set to default if not specified, then ask if this is ok.
 if [[ "$#" -eq "1" ]]; then
     # Set default and ask if this is ok
-    savedir=`readlink -f $datadir/../norm`
+    savedir=$(cd $datadir/../norm && pwd -P)
     echo "SAVEDIR not specified. Set to $savedir"
     read -rep "Is this ok [Y/n]?" ans
     case $ans in 
@@ -65,7 +54,7 @@ if [[ "$#" -eq "1" ]]; then
         *    ) ;;
     esac
 else
-    savedir=`readlink -f $2`
+    savedir=$(cd `dirname $2` && pwd -P)
 fi
 
 # Check if savedir exists
