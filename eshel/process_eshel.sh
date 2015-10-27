@@ -36,7 +36,6 @@ fi
 
 # set directories
 datadir=$(cd $1 && pwd -P)
-echo $datadir
 if [[ ! -d $datadir ]]; then
     echo "$datadir does not exist."
     exit 1
@@ -46,7 +45,7 @@ fi
 # Set to default if not specified, then ask if this is ok.
 if [[ "$#" -eq "1" ]]; then
     # Set default and ask if this is ok
-    savedir=$(cd `dirname `$datadir/../norm`` && pwd -P)
+    savedir=$(cd $datadir/../norm && pwd -P)
     echo "SAVEDIR not specified. Set to $savedir"
     read -rep "Is this ok [Y/n]?" ans
     case $ans in 
