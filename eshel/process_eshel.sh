@@ -13,7 +13,7 @@ specnorm=$scriptdir/specnorm.py
 merging=$scriptdir/order_merging.py
 
 PYTHON=$(which python)
-PYFLAGS=-u
+PYFLAGS=-i
 
 # Check if specnorm is available
 if [[ ! -f $specnorm ]]; then
