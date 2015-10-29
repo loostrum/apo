@@ -13,6 +13,7 @@ specnorm=$scriptdir/specnorm.py
 merging=$scriptdir/order_merging.py
 
 PYTHON=$(which python)
+PYFLAGS=-u
 
 # Check if specnorm is available
 if [[ ! -f $specnorm ]]; then
@@ -84,7 +85,7 @@ echo "Will now call normalization script."
 
 for file in $files; do
     echo $(basename $file)
-    $PYTHON $specnorm $file $savedir 
+    $PYTHON $PYFLAGS $specnorm $file $savedir 
 done
 
 # Merge orders
@@ -93,8 +94,8 @@ read -rep "Start order merging [Y/n]?" ans
 case $ans in 
     [Nn] ) echo "Run $mergin $savedir $savedir to merge orders."
            exit 0;;
-    [Yy] ) $PYTHON $merging $savedir $savedir;;
-    *    ) $PYTHON $merging $savedir $savedir;;
+    [Yy] ) $PYTHON $PYFLAGS $merging $savedir $savedir;;
+    *    ) $PYTHON $PYFLAGS $merging $savedir $savedir;;
 esac
 
 # We are done :D
