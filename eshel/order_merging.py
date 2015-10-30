@@ -63,6 +63,7 @@ if __name__ == '__main__':
     orders = sorted(files.keys(), reverse=True)
 
     # load first order
+    print 'Processing order {0} (1/{1}'.format(orders[0], len(orders))
     wave_full, flux_full = read_file(files[orders[0]])
     # array to save order merge locations
     merge_locs = []
@@ -92,7 +93,7 @@ if __name__ == '__main__':
         ans = 1
     if ans == 1:
         fig, ax = plt.subplots()
-        ax.plot(wave_full, flux_full)
+        ax.plot(wave_full, flux_full, c='k')
         for wav_min, wav_max in merge_locs:
             ax.axvspan(wav_min, wav_max, alpha=.1)
         ax.set_xlim(wave_full[0], wave_full[-1])
