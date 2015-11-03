@@ -58,7 +58,7 @@ if [[ "$#" -eq "1" ]]; then
         *    ) ;;
     esac
 else
-    savedir=$(cd $2 && pwd -P | awk '{gsub ("/cygdrive/c", "C:"); print $0}'))
+    savedir=$(cd $2 && pwd -P | awk '{gsub ("/cygdrive/c", "C:"); print $0}')
 fi
 
 # Check if savedir exists
@@ -69,8 +69,7 @@ fi
 
 # Create list of files
 files=$(ls $datadir/*_1B_[0-9][0-9].fit 2>/dev/null)
-# There has to be better way to do this ...
-nfiles=$(ls $datadir/*_1B_[0-9][0-9].fit 2>/dev/null | wc -l)
+nfiles=$(echo $files | wc -w)
 
 # check if directory contains the right files
 if [[ "$nfiles" -eq "0" ]]; then
